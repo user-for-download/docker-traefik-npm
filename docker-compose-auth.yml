@@ -1,0 +1,57 @@
+version: "3.9"
+
+name: authelia
+
+volumes:
+    authelia_data: {}
+    redis_data: {}
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+
+  net-auth:
+    name: net-auth
+    driver: bridge
+
+services:
+  # redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    security_opt:
+      - no-new-privileges:true
+    expose:
+      - 6379
+    networks:
+      - net-auth
+    restart: unless-stopped
+    environment:
+      - TZ={{TZ}}
+  
+    # authelia
+  authelia:
+    container_name: authelia
+    image: authelia/authelia:latest
+    volumes:
+      - $APPDIR/authelia:/config
+      - authelia_data:/data
+    environment:
+      - TZ={{TZ}}
+    networks:
+      - t2_proxy
+      - net-auth
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.routers.authelia-rtr.entrypoints: http
+      traefik.http.routers.authelia-rtr.rule: Host(`auth.SITE.DOMAIN`)
+      traefik.http.routers.authelia-rtr.service: authelia-svc
+      traefik.http.routers.authelia-rtr.middlewares: middlewares-authelia@file
+      traefik.http.services.authelia-svc.loadbalancer.server.port: 9091
+      org.label-schema.group: "monitoring"

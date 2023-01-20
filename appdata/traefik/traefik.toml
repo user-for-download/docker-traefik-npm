@@ -1,0 +1,59 @@
+# Global configuration
+[global]
+    checkNewVersion = true
+    sendAnonymousUsage = false
+
+# Entrypoints definition
+[entryPoints]
+    [entryPoints.http]
+        address = ":80"
+        [entryPoints.http.http]
+            middlewares = ["chain-no-auth@file"]
+            
+        [entryPoints.http.forwardedHeaders]
+            trustedIPs = ["127.0.0.1/32","10.0.0.0/8","192.168.0.0/16","172.16.0.0/12"]
+
+    [entryPoints.metrics]
+        address = ":8081"
+
+# Optional
+[log]
+  level = "INFO"
+  filePath = "/logs/traefik.log"
+  format = "common"
+
+# Enable access logs
+[accessLog]
+  filePath = "/logs/access.log"
+  format = "common"
+  bufferingSize = 100
+  [accessLog.filters]
+    statusCodes = ["204-299","400-499","500-599"]
+    retryAttempts = true
+    minDuration = "10ms"
+
+# Enable API and dashboard
+[api]
+  dashboard = true
+
+# Enable configuration backend
+[providers]
+  [providers.docker]
+    endpoint = "tcp://socket-proxy:2375"
+    network = "t2_proxy"
+    exposedByDefault = false
+    swarmMode = false
+
+  [providers.file]
+    directory = "/etc/traefik"
+    watch = true
+
+# metrics
+[metrics]
+  [metrics.prometheus]
+    entryPoint = "metrics"
+    addEntryPointsLabels = true
+    addRoutersLabels = true
+    addServicesLabels = true
+    #manualRouting = true
+    buckets = [0.1,0.3,1.2,5.0]

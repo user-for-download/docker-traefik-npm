@@ -1,0 +1,83 @@
+###############################################################
+#                   Authelia configuration                    #
+###############################################################
+
+server.host: 0.0.0.0
+server.port: 9091
+log.level: warn
+
+# This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
+# I used this site to generate the secret: https://www.grc.com/passwords.htm
+# jwt_secret: SECRET_GOES_HERE # use docker secret file instead AUTHELIA_JWT_SECRET_FILE
+
+# https://docs.authelia.com/configuration/miscellaneous.html#default-redirection-url
+default_redirection_url: https://auth.SITE.DOMAIN
+jwt_secret: DDHPZeyPqwPvsjZPkyAbqAtbfiigxmLPbDjPTgBY9WR9dja3
+
+totp:
+  issuer: auth.SITE.DOMAIN
+  period: 30
+  skew: 1
+
+# Enable the following for Duo Push Notification support
+# https://www.authelia.com/docs/features/2fa/push-notifications.html
+#duo_api:
+#  hostname: api-123456789.example.com
+#  integration_key: ABCDEF
+#  # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY_FILE
+#  secret_key: # use docker secret file instead AUTHELIA_DUO_API_SECRET_KEY_FILE
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    # customize passwords based on https://docs.authelia.com/configuration/authentication/file.html
+    password:
+      algorithm: argon2id
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 1024 # blocks this much of the RAM. Tune this.
+
+# https://docs.authelia.com/configuration/access-control.html
+access_control:
+  default_policy: deny
+  rules:
+    # Rules applied to everyone
+#    - domain: radarr.example.com
+#      policy: bypass
+#      subject: "group:admins"
+#      resources:
+#      - "^/api/.*$"
+    - domain: auth.SITE.DOMAIN
+      policy: bypass
+    - domain: "*.SITE.DOMAIN"
+      policy: one_factor
+
+session:
+  name: authelia_session
+  # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
+  # Used a different secret, but the same site as jwt_secret above.
+  secret: 8JeXHNBVYByqb28wxxNyagzXMby4QpPaL0w5qeJ1L2R2XpwH # use docker secret file instead AUTHELIA_SESSION_SECRET_FILE
+  expiration: 3600 # 1 hour
+  inactivity: 300 # 5 minutes
+  domain: SITE.DOMAIN # Should match whatever your root protected domain is
+
+  redis:
+    host: redis
+    port: 6379
+    # This secret can also be set using the env variables AUTHELIA_SESSION_REDIS_PASSWORD_FILE
+    #password: authelia
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  encryption_key: e09Dq2WWKaV4iQ2zD98trMaR0DjkJJRQewYucxFEmLawtJ6u
+  local:
+    path: /data/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /data/notification.txt

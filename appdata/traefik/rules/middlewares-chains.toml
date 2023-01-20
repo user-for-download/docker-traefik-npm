@@ -1,0 +1,4 @@
+[http.middlewares]
+  [http.middlewares.chain-no-auth]
+    [http.middlewares.chain-no-auth.chain]
+      middlewares = [ "middlewares-compress", "middlewares-rate-limit", "middlewares-https-redirectscheme"]
