@@ -14,6 +14,6 @@
 
   [http.middlewares.middlewares-authelia]
     [http.middlewares.middlewares-authelia.forwardAuth]
-      address = "http://authelia:9091/api/verify?rd=https://auth.SITE.DOMAIN"
+      address = "http://authelia:9091/api/verify?rd=https://auth.<SITE.DOMAIN>"
       trustForwardHeader = true
       authResponseHeaders = ["Remote-User", "Remote-Groups"]

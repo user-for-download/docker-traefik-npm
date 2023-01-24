@@ -11,8 +11,8 @@ networks:
     name: t2_proxy
     external: true
 
-  net-auth:
-    name: net-auth
+  net_auth:
+    name: net_auth
     driver: bridge
 
 services:
@@ -27,12 +27,12 @@ services:
     expose:
       - 6379
     networks:
-      - net-auth
+      - net_auth
     restart: unless-stopped
     environment:
       - TZ={{TZ}}
   
-    # authelia
+  # authelia
   authelia:
     container_name: authelia
     image: authelia/authelia:latest
@@ -43,14 +43,14 @@ services:
       - TZ={{TZ}}
     networks:
       - t2_proxy
-      - net-auth
+      - net_auth
     security_opt:
       - no-new-privileges:true
     restart: always
     labels:
       traefik.enable: true
       traefik.http.routers.authelia-rtr.entrypoints: http
-      traefik.http.routers.authelia-rtr.rule: Host(`auth.SITE.DOMAIN`)
+      traefik.http.routers.authelia-rtr.rule: Host(`auth.<SITE.DOMAIN>`)
       traefik.http.routers.authelia-rtr.service: authelia-svc
       traefik.http.routers.authelia-rtr.middlewares: middlewares-authelia@file
       traefik.http.services.authelia-svc.loadbalancer.server.port: 9091

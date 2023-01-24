@@ -7,8 +7,8 @@ volumes:
     db_data: {}
 
 networks:
-  npm:
-    name: npm
+  npm_proxy:
+    name: npm_proxy
     driver: bridge
 
 services:
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     container_name: npm-secure
     networks:
-      - npm
+      - npm_proxy
     ports:
       - '443:443'
       - '81:81'
@@ -45,4 +45,4 @@ services:
     volumes:
       -  db_data:/var/lib/mysql
     networks:
-      - npm
+      - npm_proxy
