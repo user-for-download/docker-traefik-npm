@@ -7,11 +7,11 @@ labels:
   type: syslog
 ---
 filenames:
-  - /logs/traefik/*.log
+  - /logs/traefik/access.log
 labels:
   type: traefik
 ---
 filenames:
-  - /data/logs/*.log
+  - /logs/npm/*.log
 labels:
   type: nginx-proxy-manager

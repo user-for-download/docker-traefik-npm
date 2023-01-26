@@ -4,9 +4,6 @@ name: services
 
 volumes:
     portainer_data: {}
-    crowdsec_data: {}
-    npm_npm_data:
-      external: true
 
 networks:
   t2_proxy:
@@ -16,11 +13,7 @@ networks:
   socket_proxy:
     name: socket_proxy
     external: true
-  
-  net_svc:
-    name: net_svc
-    driver: bridge
-  
+ 
 services:
   # whoami
   whoami:
@@ -36,9 +29,11 @@ services:
     labels:
       traefik.enable: true
       traefik.http.routers.whoami-rtr.entrypoints: http
-      traefik.http.routers.whoami-rtr.rule: Host(`wh.<SITE.DOMAIN>`)
+      traefik.http.routers.whoami-rtr.rule: Host(`$WHOAMI_DOMAINNAME`)
       traefik.http.routers.whoami-rtr.service: whoami-svc
       traefik.http.services.whoami-svc.loadbalancer.server.port: 8082
+      #traefik.http.routers.whoami-rtr.middlewares: middlewares-authelia@file
+      org.label-schema.group: "monitoring"
 
   # Portainer
   portainer:
@@ -54,65 +49,12 @@ services:
     volumes:
       - portainer_data:/data
     environment:
-      - TZ=$TZ
+      TZ: $TZ
     labels:
       traefik.enable: true
       traefik.http.routers.portainer-rtr.entrypoints: http
-      traefik.http.routers.portainer-rtr.rule: Host(`prtr.<SITE.DOMAIN>`)
+      traefik.http.routers.portainer-rtr.rule: Host(`$PORTAINER_DOMAINNAME`)
       traefik.http.routers.portainer-rtr.service: portainer-svc
       traefik.http.services.portainer-svc.loadbalancer.server.port: 9000
-      traefik.http.routers.portainer-rtr.middlewares: middlewares-authelia@file
-
-  # crowdsec
-  crowdsec:
-    image: crowdsecurity/crowdsec
-    container_name: crowdsec
-    expose:
-      - 6060
-    environment:
-      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/nginx crowdsecurity/sshd crowdsecurity/nginx-proxy-manager"
-      GID: "${GID-1000}"
-      CUSTOM_HOSTNAME: linghub_net
-    volumes:
-      - $DOCKERDIR/logs/traefik:/logs/traefik:ro
-      - /var/log:/var/log:ro
-      - crowdsec_data:/var/lib/crowdsec/data
-      - $APPDIR/crowdsec/config:/etc/crowdsec
-      - $APPDIR/crowdsec/parsers:/etc/crowdsec/parsers
-      - npm_npm_data:/data
-    networks:
-      - t2_proxy
-    security_opt:
-      - no-new-privileges:true
-    restart: always
-    labels:
-      traefik.enable: true
-      traefik.http.routers.crowdsec-rtr.entrypoints: http
-      traefik.http.routers.crowdsec-rtr.rule: Host(`crowdsec.<SITE.DOMAIN>`)
-      traefik.http.routers.crowdsec-rtr.service: crowdsec-svc
-      traefik.http.services.crowdsec-svc.loadbalancer.server.port: 8080
+      #traefik.http.routers.portainer-rtr.middlewares: middlewares-authelia@file
       org.label-schema.group: "monitoring"
-  
-  #dashboards crowdsec
-  crowdsec-dashboard:
-    container_name: crowdsec-dashboard
-    build: $APPDIR/crowdsec/dashboard
-    environment:
-      MB_DB_FILE: /data/metabase.db
-      MGID: "${GID-1000}"
-    depends_on:
-      - crowdsec
-    volumes:
-      - crowdsec_data:/metabase-data/
-    networks:
-      - t2_proxy
-    security_opt:
-      - no-new-privileges:true
-    restart: unless-stopped
-    labels:
-      traefik.enable: true
-      traefik.http.routers.crdb-rtr.entrypoints: http
-      traefik.http.routers.crdb-rtr.rule: Host(`crdb.<SITE.DOMAIN>`)
-      traefik.http.routers.crdb-rtr.service: crdb-svc
-      traefik.http.services.crdb-svc.loadbalancer.server.port: 3000
-      traefik.http.routers.crdb-rtr.middlewares: middlewares-authelia@file
