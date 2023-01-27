@@ -31,8 +31,10 @@ services:
       PARSERS: "crowdsecurity/dateparse-enrich crowdsecurity/traefik-logs crowdsecurity/nginx-proxy-manager-logs crowdsecurity/sshd-logs crowdsecurity/syslog-logs crowdsecurity/geoip-enrich"
       GID: "${GID-1000}"
       CUSTOM_HOSTNAME: docker-crowdsec
-      CROWDSEC_BOUNCER_KEY_API_1: /run/secrets/crowdsec_key_api_1
-      CROWDSEC_BOUNCER_KEY_API_2: /run/secrets/crowdsec_key_api_2
+      # 540a8784aa1f2b9331c3c36955abd1fabf7ce76277a342a9
+      CROWDSEC_BOUNCER_KEY_API_1: /run/secrets/crowdsec_key_api_1 
+      # 41b5728912aadf0697bcee0ce9a3a592e539255c8cc09065
+      CROWDSEC_BOUNCER_KEY_API_2: /run/secrets/crowdsec_key_api_2 
     volumes:
       #ro
       - $DOCKERDIR/logs:/logs:ro

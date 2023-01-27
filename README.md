@@ -18,7 +18,9 @@ Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
 
 ## Create new secrets
 ```bash
-cd  secrets/ && for i in *; do openssl rand -hex 16 > $i; done
+cd docker-traefik-npm/
+cd secrets/ && for i in *; do openssl rand -hex 16 > $i; done
+cd ..
 ```
 ## Change config .env
 ```bash
