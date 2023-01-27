@@ -11,6 +11,13 @@ networks:
     name: npm_proxy
     driver: bridge
 
+secrets:
+ #nginx-proxy-manager
+  mysql_pwd:
+    file: $SECRETSDIR/NPM_MYSQL_PWD
+  db_root_pwd:
+    file: $SECRETSDIR/NPM_DB_ROOT_PWD
+
 services:
   #nginx-proxy-manager
   npm-web:
@@ -23,11 +30,12 @@ services:
       - '443:443'
       - '81:81'
       #- '80:80'
+    secrets: [mysql_pwd]
     environment:
+      DB_MYSQL_PASSWORD__FILE: /run/secrets/mysql_pwd
       DB_MYSQL_HOST: "db"
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm-admin"
-      DB_MYSQL_PASSWORD: "F5taYWxvHTzjtqxjHF"
       DB_MYSQL_NAME: "npm"
       DISABLE_IPV6: 'true'
     volumes:
@@ -42,11 +50,12 @@ services:
     container_name: npm-db
     image: 'jc21/mariadb-aria:latest'
     restart: unless-stopped
+    secrets: [db_root_pwd, mysql_pwd]
     environment:
-      MYSQL_ROOT_PASSWORD: 'vTWTxaWiBxB4oh4q3B'
+      MYSQL_ROOT_PASSWORD__FILE: /run/secrets/db_root_pwd
       MYSQL_DATABASE: 'npm'
       MYSQL_USER: 'npm-admin'
-      MYSQL_PASSWORD: 'F5taYWxvHTzjtqxjHF'
+      MYSQL_PASSWORD__FILE: /run/secrets/mysql_pwd
     volumes:
       -  db_data:/var/lib/mysql
     networks:
