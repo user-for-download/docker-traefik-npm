@@ -25,7 +25,7 @@ for i in *; do openssl rand -hex 16 > $i; done
 ```bash
 cd .env.example .env
 ```
->change `SITE.DOMAIN `, `USER` and `PUID, PGID`
+> change `SITE.DOMAIN `, `USER` and `PUID, PGID`
 
 ## Deploy first
 ```bash
@@ -34,9 +34,9 @@ docker network create -d bridge t2_proxy --subnet 172.16.90.0/24
 docker-compose up -d
 docker-compose -p npm -f docker-compose-npm.yml up -d
 ```
-visit [http://ip_address:81](https://nginxproxymanager.com/). User guide - [nginx-proxy-manager](https://nginxproxymanager.com/)
->Email:    admin@example.com
->Password: changeme
+visit [http://ip_address:81](https://nginxproxymanager.com/) User guide - [nginx-proxy-manager](https://nginxproxymanager.com/)
+> Email:    admin@example.com
+> Password: changeme
 
 ## Deploy services
 ```bash
@@ -53,11 +53,12 @@ cp configuration.example.yml .configuration.yml
 ```
 and replase all `site.domain` in configuration.yml 
 
->Note: also change appdata/traefik/rules/middlewares.toml 
->address:  https://auth. `site.domain`
+> Note: also change appdata/traefik/rules/middlewares.toml 
+> address:  https://auth. `site.domain`
 
 ## Deploy
 ```bash
 docker-compose -p auth -f docker-compose-auth.yml up -d
 ```
-and uncomment #traefik.http.routers.SERVICES.middlewares: middlewares-authelia@file in docker-compose-*.yml files.
+and uncomment 
+> #traefik.http.routers.SERVICES.middlewares: middlewares-authelia@file in docker-compose-*.yml files.
