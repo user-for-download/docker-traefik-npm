@@ -1,7 +1,7 @@
 >VERSION="20.04.5 LTS (Focal Fossa)"; Docker version 20.10.23, build 7155243; Thu Jan 26 16:50:54 2023
 
 The latest versions of dockers were used on the publication mark. Now they may not be compatible! Be careful.
-Docker USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
+Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
 ## Features
 - traefik
 - nginx-proxy-manager
@@ -29,7 +29,7 @@ cp configuration.example.yml .configuration.yml
 and replase all `site.domain` in configuration.yml 
 
 >Note: also change appdata/traefik/rules/middlewares.toml 
-http://authelia:9091/api/verify?rd=https://auth.`site.domain`"
+>address:  https://auth. `site.domain` "
 
 ## Deploy
 ```bash
