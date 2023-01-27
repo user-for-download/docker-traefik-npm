@@ -18,12 +18,11 @@ Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
 
 ## Create new secrets
 ```bash
-cd  secrets/
-for i in *; do openssl rand -hex 16 > $i; done
+cd  secrets/ && for i in *; do openssl rand -hex 16 > $i; done
 ```
 ## Change config .env
 ```bash
-cd .env.example .env
+cp .env.example .env
 ```
 > change `SITE.DOMAIN `, `USER` and `PUID, PGID`
 
