@@ -1,4 +1,4 @@
->VERSION="20.04.5 LTS (Focal Fossa)"; Docker version 20.10.23, build 7155243; Thu Jan 26 16:50:54 2023
+>20.04.5 LTS (Focal Fossa); Docker version 20.10.23, build 7155243; Thu Jan 26 16:50:54 2023; default user ubuntu (1000,1000)
 
 The latest versions of dockers were used on the publication mark. Now they may not be compatible! Be careful.
 Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
@@ -21,11 +21,11 @@ Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
 cd  secrets/
 for i in *; do openssl rand -hex 16 > $i; done
 ```
-## Change configs .env
+## Change config .env
 ```bash
 cd .env.example .env
 ```
->change `SITE.DOMAIN ` and `USER`
+>change `SITE.DOMAIN `, `USER` and `PUID, PGID`
 
 ## Deploy first
 ```bash
@@ -34,7 +34,9 @@ docker network create -d bridge t2_proxy --subnet 172.16.90.0/24
 docker-compose up -d
 docker-compose -p npm -f docker-compose-npm.yml up -d
 ```
-go http://ip_address:81 
+visit [http://ip_address:81](https://nginxproxymanager.com/). User guide - [nginx-proxy-manager](https://nginxproxymanager.com/)
+>Email:    admin@example.com
+>Password: changeme
 
 ## Deploy services
 ```bash
