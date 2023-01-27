@@ -21,7 +21,30 @@ Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
 cd  secrets/
 for i in *; do openssl rand -hex 16 > $i; done
 ```
-## Change configs
+## Change configs .env
+```bash
+cd .env.example .env
+```
+>change `SITE.DOMAIN ` and `USER`
+
+## Deploy first
+```bash
+docker network create -d bridge socket_proxy --subnet 172.16.91.0/24
+docker network create -d bridge t2_proxy --subnet 172.16.90.0/24
+docker-compose up -d
+docker-compose -p npm -f docker-compose-npm.yml up -d
+```
+go http://ip_address:81 
+
+## Deploy services
+```bash
+docker-compose -p svc -f docker-compose-svc.yml up -d
+docker-compose -p crds -f docker-compose-crwd.yml up -d
+docker-compose -p mntr -f docker-compose-mntr.yml up -d
+```
+
+## If you need authorization, configure 
+authella works only with HTTPS! Сreate a proxy in nginx-proxy-manager and get a certificate through Lets. 
 ```bash
 cd appdata/authelia/
 cp configuration.example.yml .configuration.yml 
@@ -29,16 +52,10 @@ cp configuration.example.yml .configuration.yml
 and replase all `site.domain` in configuration.yml 
 
 >Note: also change appdata/traefik/rules/middlewares.toml 
->address:  https://auth. `site.domain` "
+>address:  https://auth. `site.domain`
 
 ## Deploy
 ```bash
-docker network create -d bridge socket_proxy --subnet 172.16.91.0/24
-docker network create -d bridge t2_proxy --subnet 172.16.90.0/24
-docker-compose up -d
-docker-compose -p npm -f docker-compose-npm.yml up -d
-docker-compose -p svc -f docker-compose-svc.yml up -d
 docker-compose -p auth -f docker-compose-auth.yml up -d
-docker-compose -p crds -f docker-compose-crwd.yml up -d
-docker-compose -p mntr -f docker-compose-mntr.yml up -d
 ```
+and uncomment #traefik.http.routers.SERVICES.middlewares: middlewares-authelia@file in docker-compose-*.yml files.
