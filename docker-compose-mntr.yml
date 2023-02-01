@@ -22,7 +22,7 @@ networks:
 
 ########################### SECRETS
 secrets:
- #authelia
+ #Grafana
   gf_database_password:
     file: $SECRETSDIR/GF_DATABASE_PASSWORD
   postgres_password:
