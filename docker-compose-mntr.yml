@@ -108,6 +108,8 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     volumes:
       - postgres_data:/bitnami/postgresql
+      - postgres_data:/docker-entrypoint-initdb.d
+      - postgres_data:/docker-entrypoint-preinitdb.d
     labels:
       org.label-schema.group: "monitoring"
 
