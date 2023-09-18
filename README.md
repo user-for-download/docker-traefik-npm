@@ -32,6 +32,18 @@ cp .env.example .env
 ```bash
 docker network create -d bridge socket_proxy --subnet 172.16.91.0/24
 docker network create -d bridge t2_proxy --subnet 172.16.90.0/24
+```
+> NOTE: if you run npm and traefik on the same host, then name port 80 at traefik!!!
+```yaml
+     ports:
+       - target: 82
+         published: 82
+         protocol: tcp
+         mode: host
+```
+> NOTE: otherwise you’ll have a conflict
+
+```bash
 docker-compose up -d
 docker-compose -p npm -f docker-compose-npm.yml up -d
 ```
