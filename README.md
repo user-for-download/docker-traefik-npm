@@ -1,7 +1,7 @@
 >20.04.5 LTS (Focal Fossa); Docker version 20.10.23, build 7155243; Thu Jan 26 16:50:54 2023; default user ubuntu (1000,1000)
 
 The latest versions of dockers were used on the publication mark. Now they may not be compatible! Be careful.
-Traefik USE only `HTTP`. To use `HTTPS`, configure nginx-proxy-manager
+Traefik USE only `HTTP` (port 82). To use `HTTPS` (port 443), configure nginx-proxy-manager
 ## Features
 - traefik
 - nginx-proxy-manager
